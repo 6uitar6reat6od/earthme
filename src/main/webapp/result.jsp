@@ -6,6 +6,8 @@ pageEncoding="UTF-8"
 <html lang="en">
 	<head>
 		<title>EarthMe!</title>
+		<link rel="icon" type="image/png" href="img/favicon.png">
+		
 		<link rel="StyleSheet" href="css/bootstrap.css" type="text/css" />
 		<link rel="StyleSteet" href="css/bootstrap-theme.css" type="text/css" />
 		<meta
