@@ -2,7 +2,9 @@ package system;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -18,6 +20,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import spaceapps.EarthMe.EarthMeApp;
+
 /**
  * Servlet implementation class UploadServlet
  */
@@ -25,6 +29,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 @MultipartConfig(location = "/var/lib/openshift/534cf8185973ca306a0000a5/app-root/data")
 public class UploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private File theImg;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -61,7 +67,7 @@ public class UploadServlet extends HttpServlet {
 	}
 
 	protected boolean execute(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws IOException {
 		
 		if(ServletFileUpload.isMultipartContent(request)){
             try {
@@ -69,12 +75,21 @@ public class UploadServlet extends HttpServlet {
             	
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
                 for(FileItem item : multiparts){
-                	System.out.println(item);
                     if(!item.isFormField()){
                         ServletContext ctx = request.getServletContext();
-                        File uploadFolder = new File(ctx.getRealPath("/uploads"));
+//                        System.out.println("ContextPath: "+ctx.getContextPath());
+//                        System.out.println("ContextPath: "+ctx.getRealPath("/"));
+                        File uploadFolder = new File(System.getenv("OPENSHIFT_DATA_DIR"),"uploads");
                         File tempFile = File.createTempFile( getServletName(), ".jpg", uploadFolder);
                         item.write(tempFile);
+                        uploadFolder = new File("uploadsasd");
+                        File resultFolder = new File("results");
+                        
+//                        File uploadFolder = new File(System.getProperty("user.dir"),"uploads");
+//                        File resultFolder = new File(System.getProperty("user.dir"),"results");
+                        
+                        System.out.println(uploadFolder.exists()+"\t"+uploadFolder);
+                        System.out.println(resultFolder.exists()+"\t"+resultFolder);
                         
                         //File source = new File("./img/"+item.getName());
                         //tempFile.renameTo(source);
@@ -82,18 +97,30 @@ public class UploadServlet extends HttpServlet {
                         //File source = new File(uploadFolder,item.getName());
                         //BufferedImage img = ImageIO.read(tempFile);
                         //ImageIO.write(img, "jpg", source);
-                    	
+                        
+                        File source = new File(uploadFolder,item.getName());
+
+                        BufferedImage img = ImageIO.read(tempFile);
+                        ImageIO.write(img, "jpg", source);
+
+                        ctx.log("UPLOAD: "+uploadFolder.getPath());
                         ctx.log(tempFile.getAbsolutePath());
                         ctx.log(tempFile.getName());
-                        File source_op = new File(uploadFolder.getPath()+tempFile.getName());
-                        session.setAttribute("source", source_op);
+                        //File source_op = new File(uploadFolder.getPath()+tempFile.getName());
+
+                        ctx.log(source+" EXIST?: "+source.exists()+ " THO: "+tempFile.exists());
+                        new EarthMeApp().mosaic(source, resultFolder,ctx);
+                        ctx.log("GOT MATRIX");
                         
-                        //Building.start(source_op)
+                        //File sourceResized = new File("./resized/"+item.getName());
+                        File resultImgSrc = new File(resultFolder,item.getName());
                         
-                        File sourceResized = new File("./resized/"+item.getName());
-                        File resultImgSrc = new File("./results/"+item.getName());
+                        theImg = resultImgSrc;
                         
-                        session.setAttribute("source_res", sourceResized);
+                        System.out.println("RESULTADO "+resultImgSrc.getPath());
+                        
+                        session.setAttribute("source", source);
+                        //session.setAttribute("source_res", sourceResized);
                         session.setAttribute("result", resultImgSrc);
                         response.sendRedirect("./result.jsp");
                         
@@ -102,10 +129,17 @@ public class UploadServlet extends HttpServlet {
                 
                return true;
             } catch (Exception e) {
-            	e.printStackTrace();
-            }          
+				// TODO Auto-generated catch block
+        	    System.out.println("ERROR2222: "+e.getMessage());
+				e.printStackTrace();
+			}          
 		}
 		return false;
 	}
 
+	@Override
+	public void destroy(){
+		theImg.delete();
+		super.destroy();
+	}
 }

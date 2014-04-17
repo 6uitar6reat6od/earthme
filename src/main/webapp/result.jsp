@@ -8,14 +8,17 @@ pageEncoding="UTF-8"
 		<title>EarthMe!</title>
 		<link rel="icon" type="image/png" href="img/favicon.png">
 		
-		<link rel="StyleSheet" href="css/bootstrap.css" type="text/css" />
-		<link rel="StyleSteet" href="css/bootstrap-theme.css" type="text/css" />
-		<meta
-			charset="UTF-8"
-			name="EarthMe!" />
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		
+	    <!-- Bootstrap -->
+	    <link href="css/bootstrap.min.css" rel="stylesheet">
+	    <link href="css/customcss.css" rel="stylesheet">
 	</head>
 	
 	<body>
+	
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container">
 				<div class="navbar-header">
@@ -29,7 +32,7 @@ pageEncoding="UTF-8"
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right">
-						<li class="active">
+						<li>
 							<a href="main.html">Home</a>
 						</li>
 						<li>
@@ -45,12 +48,9 @@ pageEncoding="UTF-8"
 			
 		<%
 			session = request.getSession();
-			File source=null, source_res=null, result=null;
+			File source=null, result=null;
 			if(session.getAttribute("source")!=null){
 				source = (File) session.getAttribute("source");
-			}
-			if(session.getAttribute("source_res")!=null){
-				source_res = (File) session.getAttribute("source_res");
 			}
 			if(session.getAttribute("result")!=null){
 				result = (File) session.getAttribute("result");
@@ -63,29 +63,29 @@ pageEncoding="UTF-8"
 					<h3>Here is your result!</h3>
 					<br>
 					
-
-					<!-- <div class="row">
-						<img src="<%=result.getPath() %>"/>
-					</div>-->
-					
 					<div class="row">
-						<canvas id="canvas" height="400" width="400"></canvas>
+						<img src="<%=result.getPath() %>" height="400" width="400"/>
 					</div>
-					<br>
+					
+					<!-- <div class="row">
+						<canvas id="canvas" height="400" width="400"></canvas>
+					</div>-->
+					<!-- <br>
 					<h4>From the original...</h4>
 					<br>
-					<img src="<%=source.getPath() %>"/>
+					<img src="<%=source.getPath() %>"/>-->
 				</div>
 			</div>
 		</div>
 	</body>
 	
+	<!-- 
 	<script type="text/javascript">
 	//Coge el elemento Canvas
 	var c=document.getElementById("canvas");
 	var ctx = c.getContext("2d");
 	var img = new Image();
-	img.src = "<%= source_res.getPath()%>";
+	img.src = "";
 	//c.width=c.width;
 	//c.height=c.height;
 	ctx.drawImage(img,10,10);
@@ -93,7 +93,7 @@ pageEncoding="UTF-8"
 	//Crea la imagen
 	img = new Image();
 	//Carga el enlace de la imagen
-	img.src = "<%= result.getPath()%>";
+	img.src = "";
 	img.onload = function () {
 		var ctx=c.getContext("2d");
 		//Dibuja la imagen en el canvas
@@ -108,5 +108,11 @@ pageEncoding="UTF-8"
 		ctx.putImageData(imgData,0,0);
 	}
 	</script>
+	-->
+	
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="js/bootstrap.min.js"></script>
 	
 </html>	
