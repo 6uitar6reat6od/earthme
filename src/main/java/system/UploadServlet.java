@@ -26,7 +26,9 @@ import spaceapps.EarthMe.EarthMeApp;
  * Servlet implementation class UploadServlet
  */
 
+@WebServlet(name = "UploadServlet",urlPatterns = {"/uploads/*"})
 @MultipartConfig(location = "/var/lib/openshift/534cf8185973ca306a0000a5/app-root/data")
+
 public class UploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
