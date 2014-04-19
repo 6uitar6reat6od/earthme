@@ -41,6 +41,9 @@ pageEncoding="UTF-8"
 						<li>
 							<a href="code.html">Code</a>
 						</li>
+						<li>
+							<a href="http://www.pistachosoft.com/">Back to PistachoSoft!</a>
+						</li>
 					</ul>
 				</div>
 			</div>

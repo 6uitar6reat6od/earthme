@@ -2,9 +2,7 @@ package system;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -26,9 +24,7 @@ import spaceapps.EarthMe.EarthMeApp;
  * Servlet implementation class UploadServlet
  */
 
-@WebServlet(name = "UploadServlet",urlPatterns = {"/uploads/*"})
 @MultipartConfig(location = "/var/lib/openshift/534cf8185973ca306a0000a5/app-root/data")
-
 public class UploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -69,7 +65,7 @@ public class UploadServlet extends HttpServlet {
 	}
 
 	protected boolean execute(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+			HttpServletResponse response) {
 		
 		if(ServletFileUpload.isMultipartContent(request)){
             try {
@@ -81,10 +77,10 @@ public class UploadServlet extends HttpServlet {
                         ServletContext ctx = request.getServletContext();
 //                        System.out.println("ContextPath: "+ctx.getContextPath());
 //                        System.out.println("ContextPath: "+ctx.getRealPath("/"));
-                        File uploadFolder = new File(System.getenv("OPENSHIFT_DATA_DIR"),"uploads");
+                        File uploadFolder = new File(ctx.getRealPath(""),"uploads");
                         File tempFile = File.createTempFile( getServletName(), ".jpg", uploadFolder);
                         item.write(tempFile);
-                        uploadFolder = new File("uploadsasd");
+                        uploadFolder = new File("uploads");
                         File resultFolder = new File("results");
                         
 //                        File uploadFolder = new File(System.getProperty("user.dir"),"uploads");
@@ -131,10 +127,8 @@ public class UploadServlet extends HttpServlet {
                 
                return true;
             } catch (Exception e) {
-				// TODO Auto-generated catch block
-        	    System.out.println("ERROR2222: "+e.getMessage());
-				e.printStackTrace();
-			}          
+            	e.printStackTrace();
+            }          
 		}
 		return false;
 	}

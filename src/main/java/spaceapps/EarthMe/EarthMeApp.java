@@ -42,8 +42,8 @@ public class EarthMeApp {
     	if(!CLASSIFIED)
     		new Classifier().classifyDir(DATA_FOLDER, SOURCE_FOLDER);
 
-    	img = new File(System.getenv("OPENSHIFT_DATA_DIR"),img.getPath());
-    	output = new File(System.getenv("OPENSHIFT_DATA_DIR"),output.getPath());
+    	img = new File(ctx.getRealPath(""),img.getPath());
+    	output = new File(ctx.getRealPath(""),output.getPath());
     	
     	new Builder().build(img, output);
     }
